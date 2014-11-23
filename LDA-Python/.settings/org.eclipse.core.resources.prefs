@@ -1,2 +1,5 @@
 eclipse.preferences.version=1
+encoding//src/gl.py=utf-8
 encoding//src/handle_collection.py=utf-8
+encoding//src/lda.py=utf-8
+encoding//src/topics.py=utf-8

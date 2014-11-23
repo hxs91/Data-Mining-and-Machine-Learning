@@ -12,8 +12,14 @@ vocab=dict();   #english dictionary
 document_cnt=0; #count of document
 all_cnt=dict(); #count the occurrence of a word in all documents
 minimal_occurrence=5;   #one word should at least occur minimal_occurrence times in documents
+word_in_doc=list();     #mapping the i-th word in a doc
+wordcnt_in_doc=list();  #mapping each word in doc to it's count
 
-
+def delete_useless():
+    del stopword;
+    del all_cnt;
+    
+    
 #return a list of text
 def convert(text):
     tmp=text.lower();   #convert to lower case
@@ -30,6 +36,7 @@ def convert(text):
 def one_document(text,filename,fobj):
     tlist=convert(text);
     rcd=dict();
+    word=list();
     
     for each in tlist:
         if each not in stopword:
@@ -39,6 +46,7 @@ def one_document(text,filename,fobj):
                     rcd[tmp]+=1;
                 else:
                     rcd[tmp]=1;
+                word.append(tmp);
     
     global document_cnt;
     
@@ -48,9 +56,13 @@ def one_document(text,filename,fobj):
     document_cnt+=1;
     
     fobj.write('%d'%len(rcd));
+    
+    
     for key in rcd:
         fobj.write(' %d:%d'%(key,rcd[key]));
     
+    word_in_doc.append(word);
+    wordcnt_in_doc.append(rcd);
     fobj.write('\n');
     
     return rcd;
@@ -69,10 +81,11 @@ def get_allcnt(text):
 def handle_collections(path,name):
     format=path+'format.txt';
     
-    if os.path.exists(format):
-        print 'format.txt already exists, program will terminate'
-        return;
-    formatobj=open(format,'a');
+    #if os.path.exists(format):
+    #    print 'format.txt already exists'
+    #    return;
+    
+    formatobj=open(format,'w');
     #initialize stop word and vocab 
     init(path);
     
@@ -118,7 +131,7 @@ def init(path):
     stopword = set(tmp);
     tmp=open(path+'vocab.txt','r').readlines();
     for i in range(len(tmp)):
-        vocab[tmp[i].strip()]=i+1;
+        vocab[tmp[i].strip()]=i;
         
     #print stopword
     #print len(vocab)
@@ -126,4 +139,6 @@ def init(path):
         
 if __name__ == "__main__":
     handle_collections('.\\..\\data\\','collection.txt');
+    print len(word_in_doc);
+    print len(vocab);
     #init('.\\..\\data\\')
